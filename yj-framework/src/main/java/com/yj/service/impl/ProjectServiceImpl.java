@@ -1,7 +1,5 @@
 package com.yj.service.impl;
 
-import java.util.List;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,17 +7,15 @@ import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
 import com.yj.domain.entity.LoginUser;
 import com.yj.domain.entity.Project;
-import com.yj.domain.vo.*;
+import com.yj.domain.vo.PageVO;
 import com.yj.domain.vo.projectvo.*;
-import com.yj.enums.AppHttpCodeEnum;
-import com.yj.exception.SystemException;
 import com.yj.mapper.ProjectMapper;
 import com.yj.service.ProjectService;
 import com.yj.utils.BeanCopyUtils;
 import com.yj.utils.SecurityUtils;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * (Project)表服务实现类
@@ -50,7 +46,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         List<Project> projects = projectPage.getRecords();
         List<HotProjectVO> hotProjectVOS = BeanCopyUtils.copyBeanList(projects, HotProjectVO.class);
 
-        return ResponseResult.okResult(new PageVO<>(hotProjectVOS, projectPage.getTotal()));
+        return ResponseResult.okResult(new PageVO<>(hotProjectVOS, projectPage.getTotal(), projectPage.getPages()));
     }
 
     @Override
@@ -70,7 +66,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         List<Project> projects = projectPage.getRecords();
         List<ProjectListVO> projectListVOs = BeanCopyUtils.copyBeanList(projects, ProjectListVO.class);
 
-        return ResponseResult.okResult(new PageVO<>(projectListVOs, projectPage.getTotal()));
+        return ResponseResult.okResult(new PageVO<>(projectListVOs, projectPage.getTotal(), projectPage.getPages()));
     }
 
     @Override
@@ -83,8 +79,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Override
     public ResponseResult<PageVO<MyProjectListVO>> getMyProjectList(Integer pageNum, Integer pageSize) {
         //获取用户id
-        Authentication authentication = SecurityUtils.getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUser().getId();
 
         //查询用户创建的项目
@@ -99,7 +94,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         List<Project> pageRecords = projectPage.getRecords();
         List<MyProjectListVO> myProjectListVOS = BeanCopyUtils.copyBeanList(pageRecords, MyProjectListVO.class);
 
-        return ResponseResult.okResult(new PageVO<>(myProjectListVOS, projectPage.getTotal()));
+        return ResponseResult.okResult(new PageVO<>(myProjectListVOS, projectPage.getTotal(), projectPage.getPages()));
     }
 
     @Override

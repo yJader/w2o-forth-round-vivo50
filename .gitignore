@@ -104,3 +104,6 @@ fabric.properties
 *.iml
 out
 gen
+
+# 我的密钥配置
+mykey.*

@@ -1,6 +1,7 @@
 package com.yj.domain.vo;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,12 @@ public class PageVO<T> {
     /**
      * 总记录数
      */
+    @ApiModelProperty("总记录数")
     private Long total;
+    /**
+     * 总页数
+     */
+    @ApiModelProperty("总页数")
+    private Long pageTotal;
 }
 

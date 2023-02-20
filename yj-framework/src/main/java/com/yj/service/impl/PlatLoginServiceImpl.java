@@ -58,9 +58,7 @@ public class PlatLoginServiceImpl implements PlatLoginService {
 
     @Override
     public ResponseResult logout() {
-        Authentication authentication = SecurityUtils.getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Long id = loginUser.getUser().getId();
+        Long id = SecurityUtils.getUserId();
         redisCache.deleteObject(RedisKeyConstants.PLATFORM_LOGIN+id);
         return ResponseResult.okResult();
     }

@@ -1,5 +1,6 @@
-package com.yj.domain.vo;
+package com.yj.domain.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,11 +17,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 //支持链式编程 有啥用忘了 阿巴阿巴
 @Accessors(chain = true)
-public class UserInfoVO {
-    /**
-     * 主键
-     */
-    private Long id;
+@ApiModel("用户信息值对象")
+public class UserInfoDTO {
     /**
      * 昵称
      */
