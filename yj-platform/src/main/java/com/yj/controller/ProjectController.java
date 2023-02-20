@@ -1,5 +1,6 @@
 package com.yj.controller;
 
+import com.yj.annotation.SystemLog;
 import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
 import com.yj.domain.dto.NewProjectDTO;
@@ -82,6 +83,7 @@ public class ProjectController {
     }
 
     @PostMapping("/newProject")
+    @SystemLog(businessName = "提交新项目")
     @ApiOperation(value = "提交新项目", notes = "文件(图片)上传功能还没做")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),

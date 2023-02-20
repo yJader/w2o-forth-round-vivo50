@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 /**
  * @Description:
@@ -21,7 +20,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel("新项目数据传输对象")
+@ApiModel("新项目DTO")
 public class NewProjectDTO {
     /**
      * 标题

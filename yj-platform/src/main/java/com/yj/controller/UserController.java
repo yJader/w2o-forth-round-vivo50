@@ -1,6 +1,8 @@
 package com.yj.controller;
 
+import com.yj.annotation.SystemLog;
 import com.yj.domain.ResponseResult;
+import com.yj.domain.dto.RegisterDTO;
 import com.yj.domain.dto.UserInfoDTO;
 import com.yj.domain.entity.User;
 import com.yj.domain.vo.UserInfoVO;
@@ -9,6 +11,7 @@ import com.yj.utils.BeanCopyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -32,9 +35,18 @@ public class UserController {
     }
 
     @PutMapping("/userInfo")
+    @SystemLog(businessName = "修改用户信息")
     @ApiOperation(value = "修改用户信息")
     public ResponseResult updateUserInfo(@RequestBody UserInfoDTO userInfoDTO){
         User user = BeanCopyUtils.copyBean(userInfoDTO, User.class);
         return userService.updateUserInfo(user);
+    }
+
+    @PostMapping("/register")
+    @SystemLog(businessName = "注册")
+    @ApiOperation(value = "注册")
+    public ResponseResult register(@Validated @RequestBody RegisterDTO registerDTO){
+        User user = BeanCopyUtils.copyBean(registerDTO, User.class);
+        return userService.register(user);
     }
 }
