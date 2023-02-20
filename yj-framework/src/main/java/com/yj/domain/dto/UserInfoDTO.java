@@ -27,16 +27,18 @@ public class UserInfoDTO {
     /**
      * 昵称
      */
-    @ApiModelProperty(value = "昵称", notes = "长度为1~10个字符")
+    @ApiModelProperty(value = "昵称, 长度为1~10个字符")
     @NotBlank(message = "昵称不能为空")
     @Length(min = 1, max = 10, message = "昵称长度错误, 应在1~10个字符之间")
     private String nickName;
     /**
      * 头像
      */
+    @ApiModelProperty(value = "头像")
     @NotBlank(message = "头像不能为空")
     private String avatar;
 
+    @ApiModelProperty(value = "性别")
     private String sex;
 
     @ApiModelProperty("邮箱")
