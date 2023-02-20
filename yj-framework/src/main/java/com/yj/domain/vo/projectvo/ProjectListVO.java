@@ -3,7 +3,6 @@ package com.yj.domain.vo.projectvo;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
-import com.yj.domain.entity.Pictures;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

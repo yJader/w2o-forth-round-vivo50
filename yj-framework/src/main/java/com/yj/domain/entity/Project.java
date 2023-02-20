@@ -3,6 +3,7 @@ package com.yj.domain.entity;
 import java.util.Date;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
