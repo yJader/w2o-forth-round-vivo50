@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "oss",
+      "type": "com.yj.service.impl.OssUploadService",
+      "sourceType": "com.yj.service.impl.OssUploadService"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

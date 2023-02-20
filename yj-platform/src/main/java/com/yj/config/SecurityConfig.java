@@ -42,7 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/logout").authenticated()
                 .antMatchers("/project/myProject", "/project/myProjectDetail/**").authenticated()
                 .antMatchers("/project/newProject").authenticated()
-                .antMatchers("/user/**").authenticated()
+                //用户相关功能 除注册外 均需要认证
+                .antMatchers("/user/**").authenticated().antMatchers("user/register").anonymous()
                 .antMatchers("/test/auth").authenticated()
                 // 除上面外的所有请求全部不需要认证即可访问
                 .anyRequest().permitAll();
