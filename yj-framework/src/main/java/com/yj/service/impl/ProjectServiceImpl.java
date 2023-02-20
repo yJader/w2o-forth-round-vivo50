@@ -9,6 +9,8 @@ import com.yj.domain.entity.LoginUser;
 import com.yj.domain.entity.Project;
 import com.yj.domain.vo.PageVO;
 import com.yj.domain.vo.projectvo.*;
+import com.yj.enums.AppHttpCodeEnum;
+import com.yj.exception.SystemException;
 import com.yj.mapper.ProjectMapper;
 import com.yj.service.ProjectService;
 import com.yj.utils.BeanCopyUtils;
@@ -16,6 +18,7 @@ import com.yj.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * (Project)表服务实现类
@@ -72,6 +75,9 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Override
     public ResponseResult<ProjectDetailVO> getProjectDetail(Long id) {
         Project project = getById(id);
+        if (Objects.isNull(project)) {
+            throw new SystemException(AppHttpCodeEnum.NOT_FOUND);
+        }
         ProjectDetailVO projectDetailVO = BeanCopyUtils.copyBean(project, ProjectDetailVO.class);
         return ResponseResult.okResult(projectDetailVO);
     }
@@ -100,6 +106,9 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Override
     public ResponseResult<MyProjectDetailVO> getMyProjectDetail(Long id) {
         Project project = getById(id);
+        if (Objects.isNull(project)) {
+            throw new SystemException(AppHttpCodeEnum.NOT_FOUND);
+        }
         MyProjectDetailVO myProjectDetailVO = BeanCopyUtils.copyBean(project, MyProjectDetailVO.class);
         return ResponseResult.okResult(myProjectDetailVO);
     }
