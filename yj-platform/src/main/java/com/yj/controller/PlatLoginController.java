@@ -2,9 +2,11 @@ package com.yj.controller;
 
 import com.yj.domain.ResponseResult;
 import com.yj.domain.dto.LoginUserDTO;
+import com.yj.domain.entity.User;
 import com.yj.enums.AppHttpCodeEnum;
 import com.yj.exception.SystemException;
 import com.yj.service.PlatLoginService;
+import com.yj.utils.BeanCopyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,8 @@ public class PlatLoginController {
     @PostMapping("/login")
     @ApiOperation(value = "登录")
     public ResponseResult login(@RequestBody LoginUserDTO loginUserDTO){
-        return platLoginService.login(loginUserDTO);
+        User user = BeanCopyUtils.copyBean(loginUserDTO, User.class);
+        return platLoginService.login(user);
     }
 
     @PostMapping("/logout")

@@ -1,7 +1,7 @@
 package com.yj.service;
 
 import com.yj.domain.ResponseResult;
-import com.yj.domain.dto.LoginUserDTO;
+import com.yj.domain.entity.User;
 
 /**
  * @Description:
@@ -11,7 +11,7 @@ import com.yj.domain.dto.LoginUserDTO;
  */
 public interface PlatLoginService {
 
-    ResponseResult login(LoginUserDTO loginUserDTO);
+    ResponseResult login(User user);
 
     ResponseResult logout();
 }

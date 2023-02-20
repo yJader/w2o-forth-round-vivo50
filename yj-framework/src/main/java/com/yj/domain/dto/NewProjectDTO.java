@@ -1,7 +1,6 @@
-package com.yj.domain.vo;
+package com.yj.domain.dto;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import com.yj.domain.entity.Pictures;
 import io.swagger.annotations.ApiModel;
@@ -10,30 +9,36 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @Description:
- * @Package com.yj.domain.vo
+ * @Package com.yj.domain.dto
  * @Author yJade
- * @Date 2023-02-18 15:36
+ * @Date 2023-02-19 23:37
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel("项目列表值对象")
-public class ProjectListVO {
-    /**
-     * 众筹项目id
-     */
-    @TableId
-    @ApiModelProperty("众筹项目id")
-    private Long id;
+@ApiModel("新项目数据传输对象")
+public class NewProjectDTO {
     /**
      * 标题
      */
+    @NotBlank(message = "标题不能为空")
     @ApiModelProperty("标题")
     private String title;
+    /**
+     * 描述
+     */
+    @ApiModelProperty("描述")
+    private String content;
+    /**
+     * 证明图片(使用oss存储)
+     */
+    @ApiModelProperty("证明图片(使用oss存储)")
+    @TableField(typeHandler = FastjsonTypeHandler.class)
+    private Pictures pictures;
     /**
      * 项目简介
      */
@@ -45,28 +50,13 @@ public class ProjectListVO {
     @ApiModelProperty("缩略图(使用oss存储)")
     private String thumbnail;
     /**
-     * 当前进度
-     */
-    @ApiModelProperty("当前进度")
-    private Long current;
-    /**
      * 众筹目标
      */
     @ApiModelProperty("众筹目标")
     private Long target;
     /**
-     * 浏览量
+     * 是否允许评论 (1是, 0否)
      */
-    @ApiModelProperty("浏览量")
-    private Long viewCount;
-    /**
-     * 发布人id
-     */
-    @ApiModelProperty("发布人id")
-    private Long createBy;
-    /**
-     * 发布时间
-     */
-    @ApiModelProperty("发布时间")
-    private Date createTime;
+    @ApiModelProperty("是否允许评论 (1是, 0否)")
+    private String isComment;
 }

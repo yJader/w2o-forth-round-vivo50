@@ -4,6 +4,7 @@ import java.util.Date;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,7 @@ public class Project  {
     private Long id;
     /**
     * 标题
-    */    
+    */
     @ApiModelProperty("标题")
     private String title;
     /**
@@ -70,7 +71,7 @@ public class Project  {
     private Long target;
     /**
     * 状态 (0已发布, 1草稿, 2正在审核)
-    */    
+    */
     @ApiModelProperty("状态 (0已发布, 1草稿, 2正在审核)")
     private String status;
     /**
@@ -85,12 +86,15 @@ public class Project  {
     private String isComment;
     /**
     * 发布人id
-    */    
+    */
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("发布人id")
     private Long createBy;
     /**
     * 发布时间
-    */    
+    */
+    @TableField(fill = FieldFill.INSERT)
+
     @ApiModelProperty("发布时间")
     private Date createTime;
     /**

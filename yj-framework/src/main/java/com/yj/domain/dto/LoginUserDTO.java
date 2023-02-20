@@ -1,5 +1,6 @@
 package com.yj.domain.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel("登录用户数据传输对象")
 public class LoginUserDTO {
-    private String username;
+    private String userName;
     private String password;
 }

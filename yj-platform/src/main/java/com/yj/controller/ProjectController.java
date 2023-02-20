@@ -2,20 +2,19 @@ package com.yj.controller;
 
 import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
-import com.yj.domain.vo.HotProjectVO;
-import com.yj.domain.vo.PageVO;
-import com.yj.domain.vo.ProjectDetailVO;
-import com.yj.domain.vo.ProjectListVO;
+import com.yj.domain.dto.NewProjectDTO;
+import com.yj.domain.entity.Project;
+import com.yj.domain.vo.*;
+import com.yj.domain.vo.projectvo.*;
 import com.yj.enums.AppHttpCodeEnum;
 import com.yj.exception.SystemException;
 import com.yj.service.ProjectService;
+import com.yj.utils.BeanCopyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Description:
@@ -46,9 +45,29 @@ public class ProjectController {
         return projectService.projectList(pageNum, pageSize);
     }
 
-    @GetMapping("/project/{id}")
+    @GetMapping("/projectDetail/{id}")
     @ApiOperation(value = "项目详情")
     public ResponseResult<ProjectDetailVO> getProjectDetail(@PathVariable("id") Long id) {
         return projectService.getProjectDetail(id);
+    }
+
+    @GetMapping("/myProject")
+    @ApiOperation(value = "我的项目列表")
+    public ResponseResult<PageVO<MyProjectListVO>> getMyProjectList(Integer pageNum, Integer pageSize) {
+        return projectService.getMyProjectList(pageNum, pageSize);
+    }
+
+    @GetMapping("/myProjectDetail/{id}")
+    @ApiOperation(value = "我的项目详情")
+    public ResponseResult<MyProjectDetailVO> getMyProjectDetail(@PathVariable("id") Long id) {
+        return projectService.getMyProjectDetail(id);
+    }
+
+    @PostMapping("/newProject")
+    @ApiOperation(value = "提交新项目", notes = "文件(图片)上传功能还没做")
+    public ResponseResult submitNewProject(@RequestBody @Validated NewProjectDTO newProjectDTO) {
+        // TODO 项目上传功能未完成 还需要在表单中添加图片上传功能(上传一个图片 返回一个OSS存储链接)
+        Project project = BeanCopyUtils.copyBean(newProjectDTO, Project.class);
+        return projectService.submitNewProject(project);
     }
 }

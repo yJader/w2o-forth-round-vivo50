@@ -7,15 +7,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
+import com.yj.domain.entity.LoginUser;
 import com.yj.domain.entity.Project;
-import com.yj.domain.vo.HotProjectVO;
-import com.yj.domain.vo.PageVO;
-import com.yj.domain.vo.ProjectDetailVO;
-import com.yj.domain.vo.ProjectListVO;
+import com.yj.domain.vo.*;
+import com.yj.domain.vo.projectvo.*;
+import com.yj.enums.AppHttpCodeEnum;
+import com.yj.exception.SystemException;
 import com.yj.mapper.ProjectMapper;
 import com.yj.service.ProjectService;
 import com.yj.utils.BeanCopyUtils;
+import com.yj.utils.SecurityUtils;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * (Project)表服务实现类
@@ -74,6 +78,44 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         Project project = getById(id);
         ProjectDetailVO projectDetailVO = BeanCopyUtils.copyBean(project, ProjectDetailVO.class);
         return ResponseResult.okResult(projectDetailVO);
+    }
+
+    @Override
+    public ResponseResult<PageVO<MyProjectListVO>> getMyProjectList(Integer pageNum, Integer pageSize) {
+        //获取用户id
+        Authentication authentication = SecurityUtils.getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        Long userId = loginUser.getUser().getId();
+
+        //查询用户创建的项目
+        LambdaQueryWrapper<Project> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Project::getCreateBy, userId);
+        // 按照时间降序进行排序
+        queryWrapper.orderByDesc(Project::getCreateTime);
+
+        Page<Project> projectPage = new Page<>(pageNum, pageSize);
+        page(projectPage, queryWrapper);
+
+        List<Project> pageRecords = projectPage.getRecords();
+        List<MyProjectListVO> myProjectListVOS = BeanCopyUtils.copyBeanList(pageRecords, MyProjectListVO.class);
+
+        return ResponseResult.okResult(new PageVO<>(myProjectListVOS, projectPage.getTotal()));
+    }
+
+    @Override
+    public ResponseResult<MyProjectDetailVO> getMyProjectDetail(Long id) {
+        Project project = getById(id);
+        MyProjectDetailVO myProjectDetailVO = BeanCopyUtils.copyBean(project, MyProjectDetailVO.class);
+        return ResponseResult.okResult(myProjectDetailVO);
+    }
+
+    @Override
+    public ResponseResult submitNewProject(Project project) {
+        //数据校验由javax.validation.constraints.*完成
+        //mybatis plus完成内容填充
+        save(project);
+
+        return ResponseResult.okResult();
     }
 
 }

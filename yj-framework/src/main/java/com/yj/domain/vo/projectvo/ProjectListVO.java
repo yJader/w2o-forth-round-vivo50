@@ -1,4 +1,4 @@
-package com.yj.domain.vo;
+package com.yj.domain.vo.projectvo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -16,13 +16,13 @@ import java.util.Date;
  * @Description:
  * @Package com.yj.domain.vo
  * @Author yJade
- * @Date 2023-02-18 16:42
+ * @Date 2023-02-18 15:36
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel("项目详情值对象")
-public class ProjectDetailVO {
+@ApiModel("项目列表值对象")
+public class ProjectListVO {
     /**
      * 众筹项目id
      */
@@ -35,21 +35,15 @@ public class ProjectDetailVO {
     @ApiModelProperty("标题")
     private String title;
     /**
-     * 描述
-     */
-    @ApiModelProperty("描述")
-    private String content;
-    /**
-     * 证明图片(使用oss存储)
-     */
-    @ApiModelProperty("证明图片(使用oss存储)")
-    @TableField(typeHandler = FastjsonTypeHandler.class)
-    private Pictures pictures;
-    /**
      * 项目简介
      */
     @ApiModelProperty("项目简介")
     private String summary;
+    /**
+     * 缩略图(使用oss存储)
+     */
+    @ApiModelProperty("缩略图(使用oss存储)")
+    private String thumbnail;
     /**
      * 当前进度
      */
@@ -65,11 +59,6 @@ public class ProjectDetailVO {
      */
     @ApiModelProperty("浏览量")
     private Long viewCount;
-    /**
-     * 是否允许评论 (1是, 0否)
-     */
-    @ApiModelProperty("是否允许评论 (1是, 0否)")
-    private String isComment;
     /**
      * 发布人id
      */

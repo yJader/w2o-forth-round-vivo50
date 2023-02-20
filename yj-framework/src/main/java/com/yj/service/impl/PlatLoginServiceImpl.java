@@ -2,8 +2,8 @@ package com.yj.service.impl;
 
 import com.yj.constants.RedisKeyConstants;
 import com.yj.domain.ResponseResult;
-import com.yj.domain.dto.LoginUserDTO;
 import com.yj.domain.entity.LoginUser;
+import com.yj.domain.entity.User;
 import com.yj.domain.vo.PlatUserLoginVO;
 import com.yj.domain.vo.UserInfoVO;
 import com.yj.enums.AppHttpCodeEnum;
@@ -13,7 +13,6 @@ import com.yj.utils.BeanCopyUtils;
 import com.yj.utils.JwtUtil;
 import com.yj.utils.RedisCache;
 import com.yj.utils.SecurityUtils;
-import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,9 +35,9 @@ public class PlatLoginServiceImpl implements PlatLoginService {
     private RedisCache redisCache;
 
     @Override
-    public ResponseResult login(LoginUserDTO loginUserDTO) {
+    public ResponseResult login(User user) {
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword());
+                new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
         //判断是否认证通过
         if (Objects.isNull(authenticate)){
