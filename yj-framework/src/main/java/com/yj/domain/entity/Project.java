@@ -1,19 +1,15 @@
 package com.yj.domain.entity;
 
-import java.util.Date;
-
-import java.io.Serializable;
-import java.util.List;
-
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.*;
+import lombok.experimental.Accessors;
+
+import java.util.Date;
 
 /**
  * (Project)表实体类
@@ -26,12 +22,13 @@ import io.swagger.annotations.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "yj_project", autoResultMap = true) //操作json必须开启autoResultMap
-@ApiModel("")
+@Accessors(chain = true) //支持链式编程
+@ApiModel("项目")
 public class Project  {
     /**
     * 众筹项目id
     */
-    @TableId
+    @TableId(type = IdType.AUTO)
     @ApiModelProperty("众筹项目id")
     private Long id;
     /**
@@ -114,4 +111,8 @@ public class Project  {
     @ApiModelProperty("删除标志(0未删除, 1已删除)")
     private String delFlag;
 
+    public Project(Long id, Long viewCount) {
+        this.id = id;
+        this.viewCount = viewCount;
+    }
 }

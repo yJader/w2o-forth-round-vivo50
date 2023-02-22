@@ -7,6 +7,32 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
+
+    druid:
+      aop-patterns: com.yj.boot.*  #监控SpringBean
+      filters: stat,wall     # 底层开启功能，stat(sql监控)，wall(防火墙)
+
+      stat-view-servlet: # 配置监控页功能
+        enabled: true
+        login-username: admin
+        login-password: admin
+        resetEnable: false # 禁用重置
+
+      web-stat-filter: # 监控web
+        enabled: true
+        urlPattern: /*
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*' # 排除静态资源
+
+      filter:
+        stat: # 对上面filters里面的stat的详细配置
+          slow-sql-millis: 1000 # 慢查询时长的判断依据
+          logSlowSql: true
+          enabled: true
+        wall: # 防火墙
+          enabled: true
+          config:
+            drop-table-allow: false # 禁止删表操作
+
   servlet:
     multipart:
       max-file-size: 2MB
@@ -16,6 +42,7 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
 
 # mybatis plus配置
 mybatis-plus:

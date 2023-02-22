@@ -21,6 +21,7 @@ import java.util.Objects;
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private UserMapper userMapper;
 

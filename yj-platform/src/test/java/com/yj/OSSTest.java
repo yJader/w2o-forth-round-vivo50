@@ -9,7 +9,6 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,7 @@ import java.io.InputStream;
 @SpringBootTest
 @Component
 @PropertySource("classpath:mykey.properties")
-@ConfigurationProperties(prefix = "oss")
+//@ConfigurationProperties(prefix = "oss")
 //TODO 就离谱 这个项目的@PropertySource和@ConfigurationProperties组合后不能使用 真找不到原因 摆了
 public class OSSTest {
 //    @Value("${accessKey}")

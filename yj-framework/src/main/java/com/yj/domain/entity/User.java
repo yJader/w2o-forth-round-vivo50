@@ -1,14 +1,15 @@
 package com.yj.domain.entity;
 
-import java.util.Date;
-
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.*;
+
+import java.util.Date;
 
 /**
  * 用户表(User)表实体类
@@ -26,7 +27,7 @@ public class User  {
     /**
     * 主键
     */
-    @TableId
+    @TableId(type = IdType.AUTO)
     @ApiModelProperty("主键")
     private Long id;
     /**

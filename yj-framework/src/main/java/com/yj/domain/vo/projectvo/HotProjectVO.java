@@ -1,14 +1,11 @@
 package com.yj.domain.vo.projectvo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * @Description:
@@ -52,10 +49,5 @@ public class HotProjectVO {
      */
     @ApiModelProperty("众筹目标")
     private Long target;
-    /**
-     * 浏览量
-     */
-    @ApiModelProperty("浏览量")
-    private Long viewCount;
 }
 

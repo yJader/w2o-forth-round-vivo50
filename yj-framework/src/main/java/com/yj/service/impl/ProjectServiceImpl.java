@@ -3,6 +3,7 @@ package com.yj.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yj.constants.RedisKeyConstants;
 import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
 import com.yj.domain.entity.LoginUser;
@@ -14,20 +15,31 @@ import com.yj.exception.SystemException;
 import com.yj.mapper.ProjectMapper;
 import com.yj.service.ProjectService;
 import com.yj.utils.BeanCopyUtils;
+import com.yj.utils.PageUtil;
+import com.yj.utils.RedisCache;
 import com.yj.utils.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * (Project)表服务实现类
- *
+ *  TODO 修改浏览量为 从redis中读取
  * @author makejava
  * @since 2023-02-18 11:10:00
  */
 @Service("projectService")
 public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> implements ProjectService {
+
+    @Autowired
+    private RedisCache redisCache;
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    private ProjectMapper projectMapper;
 
     @Override
     public ResponseResult<PageVO<HotProjectVO>> hotProjectList(Integer pageNum, Integer pageSize) {
@@ -37,19 +49,37 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         queryWrapper.eq(Project::getStatus, SystemConstants.PROJECT_STATUS_NORMAL);
         // 必须未筹齐
         queryWrapper.apply("current < target");
-        // 按照浏览量降序进行排序
-        queryWrapper.orderByDesc(Project::getViewCount);
-        // TODO 根据用户积分进行排序
+        // 复合排序
+        List<Project> projectList = projectMapper.selectList(queryWrapper);
+        for (Project project : projectList) {
+            project.setViewCount(getViewCount(project.getId()));
+            //TODO 将redis中存储的创建者的累积积分取出 并加权到viewCount上 这样可行吗(代码规范层面)
+
+        }
+
+        //分页
+        PageVO<Project> projectPageVO = PageUtil.listConvertToPage(pageNum, pageSize, projectList, new Comparator<Project>() {
+            @Override
+            public int compare(Project o1, Project o2) {
+                return (int) (o1.getViewCount() - o2.getViewCount());
+            }
+        });
+
+        PageVO<HotProjectVO> hotProjectVOPageVO = new PageVO<>();
+        hotProjectVOPageVO.setRows(BeanCopyUtils.copyBeanList(projectPageVO.getRows(), HotProjectVO.class));
+        hotProjectVOPageVO.setPageTotal(projectPageVO.getPageTotal());
+        hotProjectVOPageVO.setTotal(projectPageVO.getTotal());
 
         //分页查询
-        Page<Project> projectPage = new Page<>(pageNum, pageSize);
-        page(projectPage, queryWrapper);
+//        Page<Project> projectPage = new Page<>(pageNum, pageSize);
+//        page(projectPage, queryWrapper);
 
         //封装查询结果
-        List<Project> projects = projectPage.getRecords();
-        List<HotProjectVO> hotProjectVOS = BeanCopyUtils.copyBeanList(projects, HotProjectVO.class);
+//        List<Project> projects = projectPage.getRecords();
+//        List<HotProjectVO> hotProjectVOS = BeanCopyUtils.copyBeanList(projects, HotProjectVO.class);
 
-        return ResponseResult.okResult(new PageVO<>(hotProjectVOS, projectPage.getTotal(), projectPage.getPages()));
+//        return ResponseResult.okResult(new PageVO<>(hotProjectVOS, projectPage.getTotal(), projectPage.getPages()));
+        return ResponseResult.okResult(hotProjectVOPageVO);
     }
 
     @Override
@@ -82,6 +112,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         return ResponseResult.okResult(projectDetailVO);
     }
 
+    @SuppressWarnings("AlibabaRemoveCommentedCode")
     @Override
     public ResponseResult<PageVO<MyProjectListVO>> getMyProjectList(Integer pageNum, Integer pageSize) {
         //获取用户id
@@ -98,6 +129,12 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         page(projectPage, queryWrapper);
 
         List<Project> pageRecords = projectPage.getRecords();
+        for (Project pageRecord : pageRecords) {
+            //还是for顺手
+            pageRecord.setViewCount(getViewCount(pageRecord.getId()));
+        }
+        //给大伙整个活
+        //List<MyProjectListVO> myProjectListVOS = BeanCopyUtils.copyBeanList(pageRecords.stream().map(project -> project.setViewCount(getViewCount(project.getId()))).collect(Collectors.toList()), MyProjectListVO.class);
         List<MyProjectListVO> myProjectListVOS = BeanCopyUtils.copyBeanList(pageRecords, MyProjectListVO.class);
 
         return ResponseResult.okResult(new PageVO<>(myProjectListVOS, projectPage.getTotal(), projectPage.getPages()));
@@ -109,6 +146,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         if (Objects.isNull(project)) {
             throw new SystemException(AppHttpCodeEnum.NOT_FOUND);
         }
+        project.setViewCount(project.getId());
         MyProjectDetailVO myProjectDetailVO = BeanCopyUtils.copyBean(project, MyProjectDetailVO.class);
         return ResponseResult.okResult(myProjectDetailVO);
     }
@@ -118,8 +156,13 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         //数据校验由javax.validation.constraints.*完成
         //mybatis plus完成内容填充
         save(project);
-
+        redisCache.addCacheMapKeyValue(RedisKeyConstants.PROJECT_VIEW_COUNT, project.getId().toString(), 0);
         return ResponseResult.okResult();
+    }
+
+    private Long getViewCount(Long articleId) {
+        Integer viewCount = redisCache.getCacheMapValue(RedisKeyConstants.PROJECT_VIEW_COUNT, articleId.toString());
+        return viewCount.longValue();
     }
 
 }

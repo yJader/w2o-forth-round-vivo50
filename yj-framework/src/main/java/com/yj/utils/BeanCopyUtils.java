@@ -28,9 +28,6 @@ public class BeanCopyUtils {
         return result;
     }
 
-    /**
-     * O: 传入泛型
-     */
     public static <O, V> List<V> copyBeanList(List<O> list, Class<V> clazz) {
         return list.stream()
                 .map(o->copyBean(o, clazz))

@@ -226,8 +226,30 @@ public class RedisCache
     }
 
 
+    /**
+     * @description: 增加Map中的value
+     * @param: key
+     * @param: hashKey
+     * @param: delta
+     * @return: void
+     * @author: YJader
+     * @date: 2023/2/21 22:32
+     */
     public void incrementCacheMapValue(String key, String hashKey, int delta) {
         redisTemplate.opsForHash().increment(key, hashKey, delta);
+    }
+
+    /**
+     * @description: 向map中增加一条k-v
+     * @param: key
+     * @param: hashKey
+     * @param: value
+     * @return: void
+     * @author: YJader
+     * @date: 2023/2/21 22:35
+     */
+    public void addCacheMapKeyValue(String key, String hashKey, int value) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
     }
 
     /**

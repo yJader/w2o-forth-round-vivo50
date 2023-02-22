@@ -1,6 +1,7 @@
 package com.yj.controller;
 
 import com.yj.annotation.SystemLog;
+import com.yj.annotation.UpdateViewCount;
 import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
 import com.yj.domain.dto.NewProjectDTO;
@@ -33,6 +34,9 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
+    /**
+     * TODO 自己的东西比较多 有空测试一下这个接口
+     */
     @GetMapping("/hotProjectList")
     @ApiOperation(value = "未筹齐热门项目列表")
     @ApiImplicitParams({
@@ -40,6 +44,7 @@ public class ProjectController {
             @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
     })
     public ResponseResult<PageVO<HotProjectVO>> hotProjectList(Integer pageNum, Integer pageSize) {
+        //最多只展示前100名
         if (pageNum*pageSize > SystemConstants.MAX_HOT_PROJECT_LIST) {
             throw new SystemException(AppHttpCodeEnum.THE_NUMBER_OF_QUERIES_IS_TOO_LARGE);
         }
@@ -56,6 +61,7 @@ public class ProjectController {
         return projectService.projectList(pageNum, pageSize);
     }
 
+    @UpdateViewCount
     @GetMapping("/projectDetail/{id}")
     @ApiOperation(value = "项目详情")
     public ResponseResult<ProjectDetailVO> getProjectDetail(@PathVariable("id") Long id) {
