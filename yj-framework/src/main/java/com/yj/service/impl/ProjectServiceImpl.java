@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yj.constants.RedisKeyConstants;
 import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
+import com.yj.domain.dto.SearchProjectDTO;
 import com.yj.domain.entity.LoginUser;
 import com.yj.domain.entity.Project;
 import com.yj.domain.vo.PageVO;
@@ -21,6 +22,7 @@ import com.yj.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -163,6 +165,25 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         save(project);
         redisCache.addCacheMapKeyValue(RedisKeyConstants.PROJECT_VIEW_COUNT, project.getId().toString(), 0);
         return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult<PageVO<ProjectListVO>> searchProject(SearchProjectDTO searchProjectDTO) {
+        if (!searchProjectDTO.notNull()) {
+            throw new SystemException(AppHttpCodeEnum.NO_QUERY_CRITERIA_ENTERED);
+        }
+        LambdaQueryWrapper<Project> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(StringUtils.hasText(searchProjectDTO.getProjectTitle()), Project::getTitle, searchProjectDTO.getProjectTitle());
+        queryWrapper.like(StringUtils.hasText(searchProjectDTO.getUserId()), Project::getCreateBy, searchProjectDTO.getUserId());
+        List<Project> projectList = list(queryWrapper);
+
+        //未搜索出结果
+        if (projectList.isEmpty()) {
+            throw new SystemException(AppHttpCodeEnum.QUERY_RESULT_IS_EMPTY);
+        }
+
+        List<ProjectListVO> projectListVOS = BeanCopyUtils.copyBeanList(projectList, ProjectListVO.class);
+        return ResponseResult.okResult(projectListVOS);
     }
 
     private Long getViewCount(Long articleId) {

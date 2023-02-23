@@ -2,6 +2,7 @@ package com.yj.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yj.domain.ResponseResult;
+import com.yj.domain.dto.SearchProjectDTO;
 import com.yj.domain.entity.Project;
 import com.yj.domain.vo.*;
 import com.yj.domain.vo.projectvo.*;
@@ -25,4 +26,6 @@ public interface ProjectService extends IService<Project> {
     ResponseResult<MyProjectDetailVO> getMyProjectDetail(Long id);
 
     ResponseResult submitNewProject(Project project);
+
+    ResponseResult<PageVO<ProjectListVO>> searchProject(SearchProjectDTO searchProjectDTO);
 }

@@ -20,6 +20,8 @@ public enum AppHttpCodeEnum {
     SIGN_IN_TIME_ERROR(510, "签到时间错误 (我超 时空穿越者)"),
     INSUFFICIENT_POINTS(511, "积分不足"),
     PROJECT_NOT_EXIST(512, "访问项目不存在"),
+    NO_QUERY_CRITERIA_ENTERED(513, "未输入查询条件"),
+    QUERY_RESULT_IS_EMPTY(514, "查询结果为空"),
     ;
     int code;
     String msg;

@@ -5,8 +5,9 @@ import com.yj.annotation.UpdateViewCount;
 import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
 import com.yj.domain.dto.NewProjectDTO;
+import com.yj.domain.dto.SearchProjectDTO;
 import com.yj.domain.entity.Project;
-import com.yj.domain.vo.*;
+import com.yj.domain.vo.PageVO;
 import com.yj.domain.vo.projectvo.*;
 import com.yj.enums.AppHttpCodeEnum;
 import com.yj.exception.SystemException;
@@ -50,6 +51,12 @@ public class ProjectController {
             throw new SystemException(AppHttpCodeEnum.THE_NUMBER_OF_QUERIES_IS_TOO_LARGE);
         }
         return projectService.hotProjectList(pageNum, pageSize);
+    }
+
+    @PostMapping("/searchProject")
+    @ApiOperation(value = "搜索项目")
+    public ResponseResult<PageVO<ProjectListVO>> searchProject(@RequestBody SearchProjectDTO searchProjectDTO) {
+        return projectService.searchProject(searchProjectDTO);
     }
 
     @GetMapping("/projectList")
