@@ -9,6 +9,7 @@ import com.yj.utils.JwtUtil;
 import com.yj.utils.RedisCache;
 import com.yj.utils.WebUtils;
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,16 +35,19 @@ import java.util.Objects;
  * @author: YJader
  * @date: 2023/2/18 22:27
  */
+@Slf4j
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
     private RedisCache redisCache;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //获取请求头中的token
+        // TODO 配合前端将请求头从"token"改为"Authorization"
         String token = request.getHeader("token");
+        log.info("请求路径:{}", request.getRequestURI());
+        log.info("获取到token:{}", token);
         if(!StringUtils.hasText(token)) {
             //请求头未携带token 说明该接口不需要登录 直接放行
             filterChain.doFilter(request, response);

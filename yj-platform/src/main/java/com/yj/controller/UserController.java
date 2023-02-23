@@ -2,6 +2,7 @@ package com.yj.controller;
 
 import com.yj.annotation.SystemLog;
 import com.yj.domain.ResponseResult;
+import com.yj.domain.dto.InputPointsDTO;
 import com.yj.domain.dto.RegisterDTO;
 import com.yj.domain.dto.UserInfoDTO;
 import com.yj.domain.entity.User;
@@ -48,5 +49,17 @@ public class UserController {
     public ResponseResult register(@Validated @RequestBody RegisterDTO registerDTO){
         User user = BeanCopyUtils.copyBean(registerDTO, User.class);
         return userService.register(user);
+    }
+
+    @GetMapping("/signIn")
+    @ApiOperation(value = "签到")
+    public ResponseResult signIn() {
+        return userService.signIn();
+    }
+
+    @PostMapping("/inputPoints")
+    @ApiOperation(value = "投积分")
+    public ResponseResult inputPoints(@RequestBody InputPointsDTO inputPointsDTO) {
+        return userService.inputPoints(inputPointsDTO.getTargetProjectId(), inputPointsDTO.getInputPoints());
     }
 }

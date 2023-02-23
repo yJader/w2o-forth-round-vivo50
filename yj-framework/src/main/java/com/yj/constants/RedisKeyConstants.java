@@ -12,4 +12,6 @@ import lombok.Data;
 public class RedisKeyConstants {
     public static final String PLATFORM_LOGIN = "platlogin:";
     public static final String PROJECT_VIEW_COUNT = "project:viewCount";
+    public static final String USER_POINTS = "user:points";
+    public static final String USER_CUMULATIVE_POINTS = "user:cumulativePoints";
 }

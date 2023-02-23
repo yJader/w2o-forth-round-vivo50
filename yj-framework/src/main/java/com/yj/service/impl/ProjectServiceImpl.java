@@ -18,6 +18,7 @@ import com.yj.utils.BeanCopyUtils;
 import com.yj.utils.PageUtil;
 import com.yj.utils.RedisCache;
 import com.yj.utils.SecurityUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,12 @@ import java.util.Objects;
 
 /**
  * (Project)表服务实现类
- *  TODO 修改浏览量为 从redis中读取
+ *
  * @author makejava
  * @since 2023-02-18 11:10:00
  */
 @Service("projectService")
+@Slf4j
 public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> implements ProjectService {
 
     @Autowired
@@ -52,18 +54,21 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         // 复合排序
         List<Project> projectList = projectMapper.selectList(queryWrapper);
         for (Project project : projectList) {
-            project.setViewCount(getViewCount(project.getId()));
-            //TODO 将redis中存储的创建者的累积积分取出 并加权到viewCount上 这样可行吗(代码规范层面)
-
+            // 将redis中存储的创建者的累积积分取出 并加权到viewCount上 这样可行吗(代码规范层面)
+            project.setViewCount(getViewCount(project.getId()) + getCumulativePoints(project.getCreateBy()) * 5L);
         }
 
         //分页
         PageVO<Project> projectPageVO = PageUtil.listConvertToPage(pageNum, pageSize, projectList, new Comparator<Project>() {
             @Override
             public int compare(Project o1, Project o2) {
-                return (int) (o1.getViewCount() - o2.getViewCount());
+                return (int) (o2.getViewCount() - o1.getViewCount());
             }
         });
+
+        for (Project row : projectPageVO.getRows()) {
+            log.info("{}浏览量为{}", row.getTitle(), row.getViewCount());
+        }
 
         PageVO<HotProjectVO> hotProjectVOPageVO = new PageVO<>();
         hotProjectVOPageVO.setRows(BeanCopyUtils.copyBeanList(projectPageVO.getRows(), HotProjectVO.class));
@@ -165,4 +170,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         return viewCount.longValue();
     }
 
+    private Integer getCumulativePoints(Long userId) {
+        Integer cumulativePoints = redisCache.getCacheMapValue(RedisKeyConstants.USER_CUMULATIVE_POINTS, userId.toString());
+        return cumulativePoints;
+    }
 }

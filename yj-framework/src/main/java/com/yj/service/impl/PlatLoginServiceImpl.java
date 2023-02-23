@@ -47,7 +47,7 @@ public class PlatLoginServiceImpl implements PlatLoginService {
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         String userId = loginUser.getUser().getId().toString();
         String jwt = JwtUtil.createJWT(userId);
-        //讲用户信息存入redis
+        //将用户信息存入redis
         redisCache.setCacheObject(RedisKeyConstants.PLATFORM_LOGIN + userId, loginUser);
 
         //讲token和userinfo封装 返回

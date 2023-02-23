@@ -16,6 +16,10 @@ public enum AppHttpCodeEnum {
     FILE_TYPE_ERROR(506, "文件类型错误, 请上传png/jpg文件"),
     NICKNAME_EXIST(507, "昵称已存在"),
     THE_NUMBER_OF_QUERIES_IS_TOO_LARGE(508, "查询数量过大"),
+    REPEATED_SIGN_IN(509, "重复签到"),
+    SIGN_IN_TIME_ERROR(510, "签到时间错误 (我超 时空穿越者)"),
+    INSUFFICIENT_POINTS(511, "积分不足"),
+    PROJECT_NOT_EXIST(512, "访问项目不存在"),
     ;
     int code;
     String msg;

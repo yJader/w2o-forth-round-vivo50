@@ -1,8 +1,8 @@
 package com.yj.job;
 
 import com.yj.constants.RedisKeyConstants;
-import com.yj.domain.entity.Project;
-import com.yj.service.ProjectService;
+import com.yj.domain.entity.User;
+import com.yj.service.UserService;
 import com.yj.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,26 +19,31 @@ import java.util.stream.Collectors;
  * @Date 2023-02-16 23:58
  */
 @Component
-public class UpdateViewCountJob {
+public class UpdatePointsJob {
 
     @Autowired
     private RedisCache redisCache;
 
     @Autowired
-    private ProjectService projectService;
+    private UserService userService;
 
 //    @Scheduled(cron = "0/5 * * * * ?") //测试用 5s更新一次
     @SuppressWarnings("AlibabaCommentsMustBeJavadocFormat")
-    @Scheduled(cron = "0 0/10 * * * ? ")
+    @Scheduled(cron = "0 0 0/1 * * ? ")
     public void viewCountJob(){
-        //获取redis中的浏览量
-        Map<String, Integer> viewCountMap = redisCache.getCacheMap(RedisKeyConstants.PROJECT_VIEW_COUNT);
-        List<Project> projectList = viewCountMap.entrySet()
-                .stream()
-                .map(entry -> new Project(Long.valueOf(entry.getKey()), entry.getValue().longValue()))
+        Map<String, Integer> pointsMap = redisCache.getCacheMap(RedisKeyConstants.USER_POINTS);
+        Map<String, Integer> cumulativePointsMap = redisCache.getCacheMap(RedisKeyConstants.USER_CUMULATIVE_POINTS);
+
+        List<User> userList = pointsMap.entrySet().stream()
+                .map(entry -> new User(Long.valueOf(entry.getKey()), entry.getValue()))
                 .collect(Collectors.toList());
+        for (User user : userList) {
+            user.setCumulativePoints(cumulativePointsMap.get(user.getId().toString()));
+        }
+
+
         //更新到数据库中
         //使用mybatis plus封装好的service方法来更新数据
-        projectService.updateBatchById(projectList);
+        userService.updateBatchById(userList);
     }
 }

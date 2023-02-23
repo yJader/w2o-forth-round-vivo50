@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "test",
+      "type": "com.yj.PropertiesTest",
+      "sourceType": "com.yj.PropertiesTest"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

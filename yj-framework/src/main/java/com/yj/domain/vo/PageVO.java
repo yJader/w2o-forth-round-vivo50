@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel("分页值对象")
+@ApiModel("分页VO")
 public class PageVO<T> {
     private List<T> rows;
     /**

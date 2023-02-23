@@ -25,10 +25,10 @@ import java.util.Date;
 @ApiModel("用户表")
 public class User  {
     /**
-    * 主键
+    * 用户id
     */
     @TableId(type = IdType.AUTO)
-    @ApiModelProperty("主键")
+    @ApiModelProperty("用户id")
     private Long id;
     /**
     * 用户名
@@ -76,6 +76,21 @@ public class User  {
     @ApiModelProperty("头像")
     private String avatar;
     /**
+    * 用户积分
+    */
+    @ApiModelProperty("用户积分")
+    private Integer points;
+    /**
+    * 用户累积积分
+    */
+    @ApiModelProperty("用户累积积分")
+    private Integer cumulativePoints;
+    /**
+    * 用户最后一次签到的日期
+    */
+    @ApiModelProperty("用户最后一次签到的日期")
+    private Date lastSignInDate;
+    /**
     * 创建人的用户id
     */    
     @ApiModelProperty("创建人的用户id")
@@ -101,5 +116,14 @@ public class User  {
     @ApiModelProperty("删除标志（0代表未删除，1代表已删除）")
     private Integer delFlag;
 
+    public User(Long id, Integer points) {
+        this.id = id;
+        this.points = points;
+    }
+
+    public User(Long id, Date lastSignInDate) {
+        this.id = id;
+        this.lastSignInDate = lastSignInDate;
+    }
 }
 

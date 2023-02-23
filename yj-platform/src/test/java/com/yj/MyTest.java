@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Description:
@@ -25,5 +27,13 @@ public class MyTest {
         ArrayList<Integer> integers = new ArrayList<>(Arrays.asList(1, 3, 2, 4));
         integers.sort(null);
         System.out.println(integers);
+    }
+
+    @Test
+    public void testStreamMap() {
+        ArrayList<String> strings = new ArrayList<>(Arrays.asList("1", "2", "3", "4"));
+        List<String> collect = strings.stream().map(s -> s + "111").collect(Collectors.toList());
+        System.out.println(collect);
+        System.out.println(strings);
     }
 }

@@ -36,9 +36,10 @@ public class ProjectController {
 
     /**
      * TODO 自己的东西比较多 有空测试一下这个接口
+     * TODO 改为 未筹齐 / 筹齐时间在xx天内的 项目
      */
     @GetMapping("/hotProjectList")
-    @ApiOperation(value = "未筹齐热门项目列表")
+    @ApiOperation(value = "未筹齐热门项目列表(限前100)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "当前页码", required = true),
             @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
