@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ public class TestController {
     }
 
     @ApiOperation("测试拦截")
-    @GetMapping({"/auth"})
+    @GetMapping("/auth")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
@@ -33,4 +34,10 @@ public class TestController {
         return "hello"+ SecurityUtils.getLoginUser();
     }
 
+    @ApiOperation("权限测试")
+    @PreAuthorize("hasAuthority('test')")
+    @GetMapping("/perm")
+    public String testPerm() {
+        return "你拥有了test权限";
+    }
 }

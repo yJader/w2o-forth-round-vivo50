@@ -11,4 +11,6 @@ public class ValueSettingConstants {
     public static final Integer VIEW_COUNT_WEIGHT = 1;
 
     public static final Integer AMOUNT_OF_SIGN_IN_POINTS = 2;
+
+    public static final Integer INITIAL_POINT = 10;
 }

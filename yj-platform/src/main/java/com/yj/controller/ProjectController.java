@@ -6,6 +6,7 @@ import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
 import com.yj.domain.dto.NewProjectDTO;
 import com.yj.domain.dto.SearchProjectDTO;
+import com.yj.domain.dto.UpdateProjectDTO;
 import com.yj.domain.entity.Project;
 import com.yj.domain.vo.PageVO;
 import com.yj.domain.vo.projectvo.*;
@@ -13,6 +14,7 @@ import com.yj.enums.AppHttpCodeEnum;
 import com.yj.exception.SystemException;
 import com.yj.service.ProjectService;
 import com.yj.utils.BeanCopyUtils;
+import com.yj.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -72,7 +74,7 @@ public class ProjectController {
     @UpdateViewCount
     @GetMapping("/projectDetail/{id}")
     @ApiOperation(value = "项目详情")
-    public ResponseResult<ProjectDetailVO> getProjectDetail(@PathVariable("id") Long id) {
+    public ResponseResult<ProjectDetailVO> projectDetail(@PathVariable("id") Long id) {
         return projectService.getProjectDetail(id);
     }
 
@@ -83,7 +85,7 @@ public class ProjectController {
             @ApiImplicitParam(name = "pageNum", value = "当前页码", required = true),
             @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
     })
-    public ResponseResult<PageVO<MyProjectListVO>> getMyProjectList(Integer pageNum, Integer pageSize) {
+    public ResponseResult<PageVO<MyProjectListVO>> myProjectList(Integer pageNum, Integer pageSize) {
         return projectService.getMyProjectList(pageNum, pageSize);
     }
 
@@ -92,19 +94,58 @@ public class ProjectController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
-    public ResponseResult<MyProjectDetailVO> getMyProjectDetail(@PathVariable("id") Long id) {
+    public ResponseResult<MyProjectDetailVO> myProjectDetail(@PathVariable("id") Long id) {
         return projectService.getMyProjectDetail(id);
+    }
+
+    @PostMapping("/updateMyProject")
+    @SystemLog(businessName = "修改我的项目")
+    @ApiOperation(value = "修改我的项目, 已发布的项目不能修改")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
+    })
+    public ResponseResult updateProject(@RequestBody @Validated UpdateProjectDTO updateProjectDTO) {
+        checkProjectAuth(updateProjectDTO.getId());
+        // 验证项目
+        Project originalProject = projectService.getById(updateProjectDTO.getId());
+        if (originalProject.getStatus().equals(SystemConstants.PROJECT_STATUS_NORMAL)) {
+            throw new SystemException(AppHttpCodeEnum.PROJECT_CANNOT_BE_MODIFIED);
+        }
+
+        Project project = BeanCopyUtils.copyBean(updateProjectDTO, Project.class);
+        return projectService.updateProject(project);
+    }
+
+    @PutMapping("/deleteMyProject")
+    @ApiOperation(value = "删除我的项目")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "projectId", value = "项目id", required = true),
+            @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
+    })
+    @SystemLog(businessName = "用户删除项目")
+    public ResponseResult deleteProject(Long projectId) {
+        // 只能编辑自己的项目
+        checkProjectAuth(projectId);
+        return projectService.deleteProject(projectId);
     }
 
     @PostMapping("/newProject")
     @SystemLog(businessName = "提交新项目")
-    @ApiOperation(value = "提交新项目", notes = "文件(图片)上传功能还没做")
+    @ApiOperation(value = "提交新项目")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
     public ResponseResult submitNewProject(@RequestBody @Validated NewProjectDTO newProjectDTO) {
-        // TODO 项目上传功能未完成 还需要在表单中添加图片上传功能(上传一个图片 返回一个OSS存储链接)
+        
         Project project = BeanCopyUtils.copyBean(newProjectDTO, Project.class);
         return projectService.submitNewProject(project);
+    }
+
+    private void checkProjectAuth(Long projectId) {
+        Long userId = SecurityUtils.getUserId();
+        Long creatorId = projectService.getById(projectId).getCreateBy();
+        if (!userId.equals(creatorId)) {
+            throw new SystemException(AppHttpCodeEnum.NO_OPERATOR_AUTH);
+        }
     }
 }

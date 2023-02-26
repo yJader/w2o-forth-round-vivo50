@@ -20,13 +20,13 @@ public interface UserService extends IService<User> {
      * @author: YJader
      * @date: 2023/2/20 17:49
      */
-    ResponseResult<UserInfoVO> userInfo();
+    ResponseResult<UserInfoVO> userInfo(Long userId);
 
     ResponseResult updateUserInfo(User user);
 
     ResponseResult register(User user);
 
-    ResponseResult signIn();
+    ResponseResult signIn(Long userId);
 
     ResponseResult inputPoints(Long targetProjectId, Integer points);
 }

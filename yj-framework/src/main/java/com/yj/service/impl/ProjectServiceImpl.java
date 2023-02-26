@@ -1,6 +1,7 @@
 package com.yj.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yj.constants.RedisKeyConstants;
@@ -77,15 +78,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         hotProjectVOPageVO.setPageTotal(projectPageVO.getPageTotal());
         hotProjectVOPageVO.setTotal(projectPageVO.getTotal());
 
-        //分页查询
-//        Page<Project> projectPage = new Page<>(pageNum, pageSize);
-//        page(projectPage, queryWrapper);
-
-        //封装查询结果
-//        List<Project> projects = projectPage.getRecords();
-//        List<HotProjectVO> hotProjectVOS = BeanCopyUtils.copyBeanList(projects, HotProjectVO.class);
-
-//        return ResponseResult.okResult(new PageVO<>(hotProjectVOS, projectPage.getTotal(), projectPage.getPages()));
         return ResponseResult.okResult(hotProjectVOPageVO);
     }
 
@@ -98,6 +90,44 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         // 按照时间降序进行排序
         queryWrapper.orderByDesc(Project::getCreateTime);
 
+        return projectListByWrapper(pageNum, pageSize, queryWrapper);
+    }
+
+    @Override
+    public ResponseResult<PageVO<ProjectListVO>> unauditedProjectList(Integer pageNum, Integer pageSize) {
+        // 查询项目列表, 封装为ResponseResult返回
+        LambdaQueryWrapper<Project> queryWrapper = new LambdaQueryWrapper<>();
+        // 必须是未审核的项目
+        queryWrapper.eq(Project::getStatus, SystemConstants.PROJECT_STATUS_UNAUDITED);
+        // 按照时间降序进行排序
+        queryWrapper.orderByDesc(Project::getCreateTime);
+
+
+        return projectListByWrapper(pageNum, pageSize, queryWrapper);
+    }
+
+    @Override
+    public ResponseResult updateProjectStatus(Long projectId, String status) {
+        LambdaUpdateWrapper<Project> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Project::getId, projectId);
+        updateWrapper.set(Project::getStatus, status);
+        return null;
+    }
+
+    @Override
+    public ResponseResult deleteProject(Long projectId) {
+        removeById(projectId);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult updateProject(Project project) {
+        updateById(project);
+        return ResponseResult.okResult();
+    }
+
+
+    private ResponseResult<PageVO<ProjectListVO>> projectListByWrapper(Integer pageNum, Integer pageSize, LambdaQueryWrapper<Project> queryWrapper) {
         //分页查询
         Page<Project> projectPage = new Page<>(pageNum, pageSize);
         page(projectPage, queryWrapper);

@@ -22,6 +22,7 @@ public enum AppHttpCodeEnum {
     PROJECT_NOT_EXIST(512, "访问项目不存在"),
     NO_QUERY_CRITERIA_ENTERED(513, "未输入查询条件"),
     QUERY_RESULT_IS_EMPTY(514, "查询结果为空"),
+    PROJECT_CANNOT_BE_MODIFIED(515, "已发布项目不能修改"),
     ;
     int code;
     String msg;

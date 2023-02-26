@@ -44,7 +44,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //获取请求头中的token
-        // TODO 配合前端将请求头从"token"改为"Authorization"
         String token = request.getHeader("token");
         log.info("请求路径:{}", request.getRequestURI());
         log.info("获取到token:{}", token);
@@ -79,7 +78,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         //将用户信息存入SecurityContextHolder
         // TODO 增加权限
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, null);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         //放行

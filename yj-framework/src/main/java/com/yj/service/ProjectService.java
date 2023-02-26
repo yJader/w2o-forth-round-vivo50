@@ -28,4 +28,12 @@ public interface ProjectService extends IService<Project> {
     ResponseResult submitNewProject(Project project);
 
     ResponseResult<PageVO<ProjectListVO>> searchProject(SearchProjectDTO searchProjectDTO);
+
+    ResponseResult<PageVO<ProjectListVO>> unauditedProjectList(Integer pageNum, Integer pageSize);
+
+    ResponseResult updateProjectStatus(Long projectId, String status);
+
+    ResponseResult deleteProject(Long projectId);
+
+    ResponseResult updateProject(Project project);
 }

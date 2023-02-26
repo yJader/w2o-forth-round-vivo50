@@ -9,7 +9,10 @@ import com.yj.domain.entity.User;
 import com.yj.domain.vo.UserInfoVO;
 import com.yj.service.UserService;
 import com.yj.utils.BeanCopyUtils;
+import com.yj.utils.SecurityUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -31,13 +34,21 @@ public class UserController {
 
     @GetMapping("/userInfo")
     @ApiOperation(value = "用户详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
+    })
     public ResponseResult<UserInfoVO> userInfo() {
-        return userService.userInfo();
+        //获取当前用户id
+        Long userId = SecurityUtils.getUserId();
+        return userService.userInfo(userId);
     }
 
     @PutMapping("/userInfo")
     @SystemLog(businessName = "修改用户信息")
     @ApiOperation(value = "修改用户信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
+    })
     public ResponseResult updateUserInfo(@RequestBody UserInfoDTO userInfoDTO){
         User user = BeanCopyUtils.copyBean(userInfoDTO, User.class);
         return userService.updateUserInfo(user);
@@ -53,12 +64,20 @@ public class UserController {
 
     @GetMapping("/signIn")
     @ApiOperation(value = "签到")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
+    })
     public ResponseResult signIn() {
-        return userService.signIn();
+        //获取当前用户id
+        Long userId = SecurityUtils.getUserId();
+        return userService.signIn(userId);
     }
 
     @PostMapping("/inputPoints")
     @ApiOperation(value = "投积分")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
+    })
     public ResponseResult inputPoints(@RequestBody InputPointsDTO inputPointsDTO) {
         return userService.inputPoints(inputPointsDTO.getTargetProjectId(), inputPointsDTO.getInputPoints());
     }

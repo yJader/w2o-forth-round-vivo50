@@ -48,9 +48,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private ProjectMapper projectMapper;
 
     @Override
-    public ResponseResult<UserInfoVO> userInfo() {
-        //获取当前用户id
-        Long userId = SecurityUtils.getUserId();
+    public ResponseResult<UserInfoVO> userInfo(Long userId) {
         //根据用户id查询用户信息
         User user = getById(userId);
         user.setPoints(getPoints(userId));
@@ -85,6 +83,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         //密码加密
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPoints(ValueSettingConstants.INITIAL_POINT);
         //存入数据库
         save(user);
 
@@ -92,8 +91,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public ResponseResult signIn() {
-        Long userId = SecurityUtils.getUserId();
+    public ResponseResult signIn(Long userId) {
         User user = getById(userId);
 
         Date lastSignInDate1 = user.getLastSignInDate();
