@@ -116,8 +116,8 @@ public class ProjectController {
         return projectService.updateProject(project);
     }
 
-    @PutMapping("/deleteMyProject")
-    @ApiOperation(value = "删除我的项目")
+    @DeleteMapping("/deleteMyProject")
+    @ApiOperation(value = "删除我的项目, 只能删除未正式发布的项目")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "projectId", value = "项目id", required = true),
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
@@ -145,6 +145,13 @@ public class ProjectController {
         Long userId = SecurityUtils.getUserId();
         Long creatorId = projectService.getById(projectId).getCreateBy();
         if (!userId.equals(creatorId)) {
+            throw new SystemException(AppHttpCodeEnum.NO_OPERATOR_AUTH);
+        }
+    }
+
+    private void checkProjectStatus(Long projectId) {
+        Project project = projectService.getById(projectId);
+        if (project.getStatus().equals(SystemConstants.PROJECT_STATUS_NORMAL)) {
             throw new SystemException(AppHttpCodeEnum.NO_OPERATOR_AUTH);
         }
     }

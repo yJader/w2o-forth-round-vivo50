@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 /**
@@ -30,6 +31,7 @@ public class UpdateProjectDTO {
      */
     @TableId(type = IdType.AUTO)
     @ApiModelProperty("众筹项目id")
+    @NotNull(message = "项目id不能为空")
     private Long id;
     /**
      * 标题
