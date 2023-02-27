@@ -5,6 +5,7 @@ import com.yj.annotation.UpdateViewCount;
 import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
 import com.yj.domain.dto.NewProjectDTO;
+import com.yj.domain.dto.PageDTO;
 import com.yj.domain.dto.SearchProjectDTO;
 import com.yj.domain.dto.UpdateProjectDTO;
 import com.yj.domain.entity.Project;
@@ -22,6 +23,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @Description:
@@ -47,7 +50,9 @@ public class ProjectController {
             @ApiImplicitParam(name = "pageNum", value = "当前页码", required = true),
             @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
     })
-    public ResponseResult<PageVO<HotProjectVO>> hotProjectList(Integer pageNum, Integer pageSize) {
+    public ResponseResult<PageVO<HotProjectVO>> hotProjectList(@Validated PageDTO pageDTO) {
+        Integer pageNum = pageDTO.getPageNum();
+        Integer pageSize = pageDTO.getPageSize();
         //最多只展示前100名
         if (pageNum*pageSize > SystemConstants.MAX_HOT_PROJECT_LIST) {
             throw new SystemException(AppHttpCodeEnum.THE_NUMBER_OF_QUERIES_IS_TOO_LARGE);
@@ -67,8 +72,8 @@ public class ProjectController {
             @ApiImplicitParam(name = "pageNum", value = "当前页码", required = true),
             @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
     })
-    public ResponseResult<PageVO<ProjectListVO>> projectList(Integer pageNum, Integer pageSize) {
-        return projectService.projectList(pageNum, pageSize);
+    public ResponseResult<PageVO<ProjectListVO>> projectList(@Validated PageDTO pageDTO) {
+        return projectService.projectList(pageDTO.getPageNum(), pageDTO.getPageSize());
     }
 
     @UpdateViewCount
@@ -85,8 +90,8 @@ public class ProjectController {
             @ApiImplicitParam(name = "pageNum", value = "当前页码", required = true),
             @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
     })
-    public ResponseResult<PageVO<MyProjectListVO>> myProjectList(Integer pageNum, Integer pageSize) {
-        return projectService.getMyProjectList(pageNum, pageSize);
+    public ResponseResult<PageVO<MyProjectListVO>> myProjectList(@Validated PageDTO pageDTO) {
+        return projectService.getMyProjectList(pageDTO.getPageNum(), pageDTO.getPageSize());
     }
 
     @GetMapping("/myProjectDetail/{id}")
@@ -123,7 +128,7 @@ public class ProjectController {
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
     @SystemLog(businessName = "用户删除项目")
-    public ResponseResult deleteProject(Long projectId) {
+    public ResponseResult deleteProject(@Validated @NotNull(message = "删除目标的项目id不能为空") Long projectId) {
         // 只能编辑自己的项目
         checkProjectAuth(projectId);
         return projectService.deleteProject(projectId);

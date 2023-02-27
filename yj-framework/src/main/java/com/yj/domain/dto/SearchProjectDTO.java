@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 public class SearchProjectDTO {
     @ApiModelProperty(value = "项目名称")
     private String projectTitle;
+
     @ApiModelProperty(value = "创建用户id")
     private String userId;
 

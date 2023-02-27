@@ -49,7 +49,7 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
-    public ResponseResult updateUserInfo(@RequestBody UserInfoDTO userInfoDTO){
+    public ResponseResult updateUserInfo(@RequestBody @Validated UserInfoDTO userInfoDTO){
         User user = BeanCopyUtils.copyBean(userInfoDTO, User.class);
         return userService.updateUserInfo(user);
     }
@@ -78,7 +78,7 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
-    public ResponseResult inputPoints(@RequestBody InputPointsDTO inputPointsDTO) {
+    public ResponseResult inputPoints(@RequestBody @Validated InputPointsDTO inputPointsDTO) {
         return userService.inputPoints(inputPointsDTO.getTargetProjectId(), inputPointsDTO.getInputPoints());
     }
 }

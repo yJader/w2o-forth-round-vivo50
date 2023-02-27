@@ -4,6 +4,7 @@ import com.yj.annotation.SystemLog;
 import com.yj.constants.SystemConstants;
 import com.yj.domain.ResponseResult;
 import com.yj.domain.dto.LoginUserDTO;
+import com.yj.domain.dto.PageDTO;
 import com.yj.domain.entity.User;
 import com.yj.domain.vo.PageVO;
 import com.yj.domain.vo.projectvo.ProjectListVO;
@@ -16,7 +17,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @Description: 原本想写动态路由的 但是前端不会
@@ -38,7 +42,7 @@ public class AdminController {
 
     @PostMapping("/login")
     @ApiOperation(value = "管理员登录")
-    public ResponseResult adminLogin(@RequestBody LoginUserDTO loginUserDTO) {
+    public ResponseResult adminLogin(@RequestBody @Validated LoginUserDTO loginUserDTO) {
         User user = BeanCopyUtils.copyBean(loginUserDTO, User.class);
         return adminLoginService.login(user);
     }
@@ -60,8 +64,8 @@ public class AdminController {
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
     @PreAuthorize("hasAuthority('system:project:examine')")
-    public ResponseResult<PageVO<ProjectListVO>> projectList(Integer pageNum, Integer pageSize) {
-        return projectService.unauditedProjectList(pageNum, pageSize);
+    public ResponseResult<PageVO<ProjectListVO>> projectList(@Validated PageDTO pageDTO) {
+        return projectService.unauditedProjectList(pageDTO.getPageNum(), pageDTO.getPageSize());
     }
 
     @PutMapping("/passProject")
@@ -71,7 +75,7 @@ public class AdminController {
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
     @PreAuthorize("hasAuthority('system:project:examine')")
-    public ResponseResult passProject(Long projectId) {
+    public ResponseResult passProject(@Validated @NotNull(message = "操作目标项目id不能为空") Long projectId) {
         return projectService.updateProjectStatus(projectId, SystemConstants.PROJECT_STATUS_NORMAL);
     }
 
@@ -82,7 +86,7 @@ public class AdminController {
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
     @PreAuthorize("hasAuthority('system:project:examine')")
-    public ResponseResult rejectProject(Long projectId) {
+    public ResponseResult rejectProject(@Validated @NotNull(message = "操作目标项目id不能为空") Long projectId) {
         return projectService.updateProjectStatus(projectId, SystemConstants.PROJECT_STATUS_DRAFT);
     }
 
@@ -94,7 +98,7 @@ public class AdminController {
     })
     @SystemLog(businessName = "管理员删除项目")
     @PreAuthorize("hasAuthority('system:project:delete')")
-    public ResponseResult deleteProject(Long projectId) {
+    public ResponseResult deleteProject(@Validated @NotNull(message = "操作目标项目id不能为空")Long projectId) {
         // TODO 提交超过xx次就直接删除
         return projectService.deleteProject(projectId);
     }

@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +30,7 @@ public class PlatLoginController {
 
     @PostMapping("/login")
     @ApiOperation(value = "登录")
-    public ResponseResult login(@RequestBody LoginUserDTO loginUserDTO) {
+    public ResponseResult login(@RequestBody @Validated LoginUserDTO loginUserDTO) {
         User user = BeanCopyUtils.copyBean(loginUserDTO, User.class);
         return platLoginService.login(user);
     }
