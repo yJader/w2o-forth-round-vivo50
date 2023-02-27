@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -111,6 +112,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         LambdaUpdateWrapper<Project> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Project::getId, projectId);
         updateWrapper.set(Project::getStatus, status);
+        updateWrapper.set(Project::getExamineTime, new Date());
+        updateWrapper.set(Project::getExamineBy, SecurityUtils.getUserId());
         return null;
     }
 
