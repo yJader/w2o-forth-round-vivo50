@@ -207,6 +207,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
             throw new SystemException(AppHttpCodeEnum.NO_QUERY_CRITERIA_ENTERED);
         }
         LambdaQueryWrapper<Project> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Project::getStatus, SystemConstants.PROJECT_STATUS_NORMAL);
         queryWrapper.like(StringUtils.hasText(searchProjectDTO.getProjectTitle()), Project::getTitle, searchProjectDTO.getProjectTitle());
         queryWrapper.like(StringUtils.hasText(searchProjectDTO.getUserId()), Project::getCreateBy, searchProjectDTO.getUserId());
         List<Project> projectList = list(queryWrapper);

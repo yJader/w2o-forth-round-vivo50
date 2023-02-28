@@ -92,7 +92,7 @@ public class ProjectController {
         return projectService.getMyProjectList(pageDTO.getPageNum(), pageDTO.getPageSize());
     }
 
-    @GetMapping("/myProjectDetail/{id}")
+    @GetMapping("/myProject/{id}")
     @ApiOperation(value = "我的项目详情")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
@@ -132,7 +132,7 @@ public class ProjectController {
         return projectService.deleteProject(id);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     @SystemLog(businessName = "提交新项目")
     @ApiOperation(value = "提交新项目")
     @ApiImplicitParams({
