@@ -114,7 +114,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         updateWrapper.set(Project::getStatus, status);
         updateWrapper.set(Project::getExamineTime, new Date());
         updateWrapper.set(Project::getExamineBy, SecurityUtils.getUserId());
-        return null;
+        projectMapper.update(null, updateWrapper);
+        return ResponseResult.okResult();
     }
 
     @Override
@@ -155,11 +156,11 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @SuppressWarnings("AlibabaRemoveCommentedCode")
     @Override
     public ResponseResult<PageVO<MyProjectListVO>> getMyProjectList(Integer pageNum, Integer pageSize) {
-        //获取用户id
+        // 获取用户id
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUser().getId();
 
-        //查询用户创建的项目
+        // 查询用户创建的项目
         LambdaQueryWrapper<Project> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Project::getCreateBy, userId);
         // 按照时间降序进行排序

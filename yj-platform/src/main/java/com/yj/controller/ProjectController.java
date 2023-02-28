@@ -24,8 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * @Description:
  * @Package com.yj.controller
@@ -60,13 +58,13 @@ public class ProjectController {
         return projectService.hotProjectList(pageNum, pageSize);
     }
 
-    @PostMapping("/searchProject")
+    @GetMapping("/search")
     @ApiOperation(value = "搜索项目")
-    public ResponseResult<PageVO<ProjectListVO>> searchProject(@RequestBody SearchProjectDTO searchProjectDTO) {
+    public ResponseResult<PageVO<ProjectListVO>> searchProject(@Validated SearchProjectDTO searchProjectDTO) {
         return projectService.searchProject(searchProjectDTO);
     }
 
-    @GetMapping("/projectList")
+    @GetMapping("/list")
     @ApiOperation(value = "项目列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "当前页码", required = true),
@@ -77,13 +75,13 @@ public class ProjectController {
     }
 
     @UpdateViewCount
-    @GetMapping("/projectDetail/{id}")
+    @GetMapping("/{id}")
     @ApiOperation(value = "项目详情")
     public ResponseResult<ProjectDetailVO> projectDetail(@PathVariable("id") Long id) {
         return projectService.getProjectDetail(id);
     }
 
-    @GetMapping("/myProject")
+    @GetMapping("/myProjectList")
     @ApiOperation(value = "我的项目列表")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
@@ -103,7 +101,7 @@ public class ProjectController {
         return projectService.getMyProjectDetail(id);
     }
 
-    @PostMapping("/updateMyProject")
+    @PutMapping("/{id}")
     @SystemLog(businessName = "修改我的项目")
     @ApiOperation(value = "修改我的项目, 已发布的项目不能修改")
     @ApiImplicitParams({
@@ -121,20 +119,20 @@ public class ProjectController {
         return projectService.updateProject(project);
     }
 
-    @DeleteMapping("/deleteMyProject")
+    @DeleteMapping("/{id}")
     @ApiOperation(value = "删除我的项目, 只能删除未正式发布的项目")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "projectId", value = "项目id", required = true),
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
     @SystemLog(businessName = "用户删除项目")
-    public ResponseResult deleteProject(@Validated @NotNull(message = "删除目标的项目id不能为空") Long projectId) {
+    public ResponseResult deleteProject(@PathVariable Long id) {
         // 只能编辑自己的项目
-        checkProjectAuth(projectId);
-        return projectService.deleteProject(projectId);
+        checkProjectAuth(id);
+        return projectService.deleteProject(id);
     }
 
-    @PostMapping("/newProject")
+    @PostMapping("/")
     @SystemLog(businessName = "提交新项目")
     @ApiOperation(value = "提交新项目")
     @ApiImplicitParams({
