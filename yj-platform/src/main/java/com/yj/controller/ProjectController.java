@@ -44,10 +44,6 @@ public class ProjectController {
      */
     @GetMapping("/hotProjectList")
     @ApiOperation(value = "未筹齐热门项目列表(限前100)")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "当前页码", required = true),
-            @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
-    })
     public ResponseResult<PageVO<HotProjectVO>> hotProjectList(@Validated PageDTO pageDTO) {
         Integer pageNum = pageDTO.getPageNum();
         Integer pageSize = pageDTO.getPageSize();
@@ -66,10 +62,6 @@ public class ProjectController {
 
     @GetMapping("/list")
     @ApiOperation(value = "项目列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "当前页码", required = true),
-            @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
-    })
     public ResponseResult<PageVO<ProjectListVO>> projectList(@Validated PageDTO pageDTO) {
         return projectService.projectList(pageDTO.getPageNum(), pageDTO.getPageSize());
     }
@@ -85,8 +77,6 @@ public class ProjectController {
     @ApiOperation(value = "我的项目列表")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
-            @ApiImplicitParam(name = "pageNum", value = "当前页码", required = true),
-            @ApiImplicitParam(name = "pageSize", value = "每页记录数", required = true),
     })
     public ResponseResult<PageVO<MyProjectListVO>> myProjectList(@Validated PageDTO pageDTO) {
         return projectService.getMyProjectList(pageDTO.getPageNum(), pageDTO.getPageSize());
@@ -122,7 +112,7 @@ public class ProjectController {
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除我的项目, 只能删除未正式发布的项目")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "projectId", value = "项目id", required = true),
+            @ApiImplicitParam(name = "id", value = "项目id", required = true),
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
     @SystemLog(businessName = "用户删除项目")
