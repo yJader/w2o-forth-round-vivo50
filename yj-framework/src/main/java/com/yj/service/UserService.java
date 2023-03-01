@@ -3,6 +3,7 @@ package com.yj.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yj.domain.ResponseResult;
 import com.yj.domain.entity.User;
+import com.yj.domain.vo.InputPointsVO;
 import com.yj.domain.vo.UserInfoVO;
 
 /**
@@ -28,5 +29,5 @@ public interface UserService extends IService<User> {
 
     ResponseResult signIn(Long userId);
 
-    ResponseResult inputPoints(Long targetProjectId, Integer points);
+    ResponseResult<InputPointsVO> inputPoints(Long targetProjectId, Integer points);
 }

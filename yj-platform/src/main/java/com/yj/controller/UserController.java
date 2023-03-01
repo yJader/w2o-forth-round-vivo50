@@ -6,6 +6,7 @@ import com.yj.domain.dto.InputPointsDTO;
 import com.yj.domain.dto.RegisterDTO;
 import com.yj.domain.dto.UserInfoDTO;
 import com.yj.domain.entity.User;
+import com.yj.domain.vo.InputPointsVO;
 import com.yj.domain.vo.UserInfoVO;
 import com.yj.service.UserService;
 import com.yj.utils.BeanCopyUtils;
@@ -78,7 +79,7 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "token", value = "令牌", required = true),
     })
-    public ResponseResult inputPoints(@RequestBody @Validated InputPointsDTO inputPointsDTO) {
+    public ResponseResult<InputPointsVO> inputPoints(@RequestBody @Validated InputPointsDTO inputPointsDTO) {
         return userService.inputPoints(inputPointsDTO.getTargetProjectId(), inputPointsDTO.getInputPoints());
     }
 }

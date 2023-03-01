@@ -9,6 +9,7 @@ import com.yj.domain.ResponseResult;
 import com.yj.domain.entity.LoginUser;
 import com.yj.domain.entity.Project;
 import com.yj.domain.entity.User;
+import com.yj.domain.vo.InputPointsVO;
 import com.yj.domain.vo.UserInfoVO;
 import com.yj.enums.AppHttpCodeEnum;
 import com.yj.exception.SystemException;
@@ -130,7 +131,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     @Transactional
-    public ResponseResult inputPoints(Long targetProjectId, Integer points) {
+    public ResponseResult<InputPointsVO> inputPoints(Long targetProjectId, Integer points) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         User user = loginUser.getUser();
         //要从redis中读取
@@ -154,7 +155,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         projectMapper.updateById(project);
         setPoints(user.getId(), user.getPoints());
 
-        return ResponseResult.okResult("成功投入"+points+"枚积分");
+        return ResponseResult.okResult(new InputPointsVO(points, user.getPoints()));
     }
 
     private boolean isExist(String variable, SFunction<User, ?> function) {
